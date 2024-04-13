@@ -42,7 +42,6 @@ add_librenms_user:
     - home: /opt/librenms
     - shell: /bin/bash
     - system: True
-    - createhome: False
 
 clone_librenms:
   git.latest:
@@ -64,3 +63,21 @@ set_librenms_permissions:
     - name: |
         setfacl -d -m g::rwx /opt/librenms/rrd /opt/librenms/logs /opt/librenms/bootstrap/cache/ /opt/librenms/storage/
         setfacl -R -m g::rwx /opt/librenms/rrd /opt/librenms/logs /opt/librenms/bootstrap/cache/ /opt/librenms/storage/
+
+install_php_dependencies:
+  cmd.run:
+    - name: ./scripts/composer_wrapper.php install --no-dev
+    - cwd: /opt/librenms
+    - user: librenms
+
+# https://docs.librenms.org/Installation/Install-LibreNMS/#configure-mariadb
+
+configure_mariadb:
+  mysql_database.present:
+    - name: librenms
+  mysql_user.present:
+    - name: librenms
+    - host: localhost
+    - password: {$MYSQLPASS} 
+    - databases:
+      - database: librenms

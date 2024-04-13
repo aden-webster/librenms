@@ -1,13 +1,8 @@
-# Got stuck on the second command, I think the rest would work
-#
-# Ensure libpve-apiclient-perl is installed (for Proxmox 4.4+)
+# Installs LibreNMS Agent on Proxmox Host
 install_libpve_apiclient_perl:
   pkg.installed:
     - name: libpve-apiclient-perl
-    - require:
-      - pkgrepo.managed: libpve-apiclient-perl
 
-# Ensure the script is downloaded and made executable
 download_proxmox_script:
   cmd.run:
     - name: |
@@ -21,4 +16,3 @@ download_proxmox_script:
 /etc/sudoers:
   file.append:
     - text: Debian-snmp ALL=(ALL) NOPASSWD: /usr/local/bin/proxmox
-
